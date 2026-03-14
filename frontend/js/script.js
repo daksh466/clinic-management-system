@@ -42,17 +42,21 @@ async function fetchPatients(tableBody) {
   }
   try {
     showLoading(tableBody);
-    const response = await fetch(`${API_URL}/api/patients`);\n    if (!response.ok) {\n      throw new Error(`HTTP ${response.status}: ${response.statusText}`);\n    }
+    const response = await fetch(`${API_URL}/api/patients`);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
     const data = await response.json();
     renderPatientsTable(tableBody, data.patients || []);
   } catch (error) {
     let errorMsg = 'Failed to load patients';
     if (error.message.includes('Failed to fetch') || error.message.includes('ERR_CONNECTION_REFUSED')) {
-errorMsg = 'Backend server not available. Check if running and network/CORS settings.';
+      errorMsg = 'Backend server not available. Check if running and network/CORS settings.';
     } else {
       errorMsg += ': ' + error.message;
     }
     showError(tableBody, errorMsg);
+    console.error("API error:", error);
   }
 }
 
@@ -94,7 +98,11 @@ async function addPatient(form) {
   patientData.course_duration_days = parseNumber(patientData.course_duration_days);
 
   try {
-    const response = await fetch(`${API_URL}/api/patients`, {\n      method: 'POST',\n      headers: { 'Content-Type': 'application/json' },\n      body: JSON.stringify(patientData)\n    });
+    const response = await fetch(`${API_URL}/api/patients`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(patientData)
+    });
     
     if (response.ok) {
       showSuccess(form.parentElement, 'Patient added successfully!');
@@ -117,11 +125,12 @@ async function addPatient(form) {
   } catch (error) {
     let errorMsg = 'Network error';
     if (error.message.includes('Failed to fetch') || error.message.includes('ERR_CONNECTION_REFUSED')) {
-'Backend server not available. Check network/CORS.';
+      errorMsg = 'Backend server not available. Check network/CORS.';
     } else {
       errorMsg += ': ' + error.message;
     }
     showError(form.parentElement, errorMsg);
+    console.error("API error:", error);
   }
 }
 
@@ -138,6 +147,7 @@ async function deletePatient(id) {
     }
   } catch (error) {
     alert('Error deleting patient: ' + error.message);
+    console.error("API error:", error);
   }
 }
 
@@ -150,7 +160,8 @@ function editPatient(id) {
 async function fetchMedicines(tableBody) {
   try {
     showLoading(tableBody);
-    const response = await fetch(`${API_URL}/api/medicines`);\n    if (!response.ok) {
+    const response = await fetch(`${API_URL}/api/medicines`);
+    if (!response.ok) {
       const error = await response.json().catch(() => ({}));
       throw new Error(error.error || `HTTP ${response.status}`);
     }
@@ -158,6 +169,7 @@ async function fetchMedicines(tableBody) {
     renderMedicinesTable(tableBody, data.medicines || []);
   } catch (error) {
     showError(tableBody, 'Failed to load medicines: ' + error.message);
+    console.error("API error:", error);
   }
 }
 
@@ -186,7 +198,11 @@ async function addMedicine(form) {
   medicineData.quantity = parseNumber(medicineData.quantity);
 
   try {
-    const response = await fetch(`${API_URL}/api/medicines`, {\n      method: 'POST',\n      headers: { 'Content-Type': 'application/json' },\n      body: JSON.stringify(medicineData)\n    });
+    const response = await fetch(`${API_URL}/api/medicines`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(medicineData)
+    });
     
     if (response.ok) {
       showSuccess(form.parentElement, 'Medicine added successfully!');
@@ -205,6 +221,7 @@ async function addMedicine(form) {
     }
   } catch (error) {
     showError(form.parentElement, 'Network error: ' + error.message);
+    console.error("API error:", error);
   }
 }
 
@@ -212,12 +229,14 @@ async function addMedicine(form) {
 async function fetchReminders(container) {
   try {
     showLoading(container);
-    const response = await fetch(`${API_URL}/api/reminders`);\n    if (!response.ok) {\n      const error = await response.json().catch(() => ({}));\n      throw new Error(error.error || `HTTP ${response.status}`);
+    const response = await fetch(`${API_URL}/api/reminders`);
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.error || `HTTP ${response.status}`);
     }
     const data = await response.json();
     
     const todayCount = data.summary ? data.summary.today : 0;
-    const lowStockCount = 0; // Will update with medicines
     
     container.innerHTML = `
       <div class="card">
@@ -232,6 +251,7 @@ async function fetchReminders(container) {
     `;
   } catch (error) {
     showError(container, 'Failed to load reminders');
+    console.error("API error:", error);
   }
 }
 
@@ -249,12 +269,14 @@ async function searchPatients() {
   
   try {
     showLoading(tableBody);
-    const response = await fetch(`${API_URL}/api/patients/search?type=${type}&q=${encodeURIComponent(query)}`);\n    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const response = await fetch(`${API_URL}/api/patients/search?type=${type}&q=${encodeURIComponent(query)}`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
     renderPatientsTable(tableBody, data.patients || []);
     infoDiv.textContent = `Found ${data.patients?.length || 0} results for "${query}" (${type})`;
   } catch (error) {
     showError(tableBody, 'Search failed: ' + error.message);
+    console.error("API error:", error);
     infoDiv.textContent = '';
   }
 }
@@ -269,12 +291,14 @@ async function loadMonthlyPatients() {
   
   try {
     showLoading(tableBody);
-    const response = await fetch(`${API_URL}/api/patients/reports/monthly?year=${year}&month=${month}`);\n    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const response = await fetch(`${API_URL}/api/patients/reports/monthly?year=${year}&month=${month}`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
     renderPatientsTable(tableBody, data.patients || []);
     document.getElementById('search-results-info').textContent = `Monthly report: ${data.period} (${data.patients?.length || 0} patients)`;
   } catch (error) {
     showError(tableBody, 'Report failed: ' + error.message);
+    console.error("API error:", error);
   }
 }
 
@@ -284,7 +308,8 @@ async function loadInsights() {
   const medicinesList = document.getElementById('common-medicines');
   
   try {
-    const response = await fetch(`${API_URL}/api/patients/reports/insights`);\n    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const response = await fetch(`${API_URL}/api/patients/reports/insights`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
     const insights = data.insights;
     
@@ -293,6 +318,7 @@ async function loadInsights() {
   } catch (error) {
     diseasesList.innerHTML = '<li>Error loading insights</li>';
     medicinesList.innerHTML = '<li>Error loading insights</li>';
+    console.error("API error:", error);
   }
 }
 
@@ -303,7 +329,9 @@ async function loadDashboard() {
   const lowStockContainer = document.querySelector('#low-stock-container');
   
   try {
-    // Total patients\n    const patientsRes = await fetch(`${API_URL}/patients`);\n    if (!patientsRes.ok) throw new Error(`HTTP ${patientsRes.status}`);
+    // Total patients
+    const patientsRes = await fetch(`${API_URL}/api/patients`);
+    if (!patientsRes.ok) throw new Error(`HTTP ${patientsRes.status}`);
     const patientsData = await patientsRes.json();
     totalPatientsContainer.textContent = patientsData.patients ? patientsData.patients.length : 0;
     
@@ -311,7 +339,8 @@ async function loadDashboard() {
     fetchReminders(remindersContainer);
     
     // Low stock (fetch medicines)
-    const medsRes = await fetch(`${API_URL}/api/medicines/low-stock`);\n    if (!medsRes.ok) throw new Error(`HTTP ${medsRes.status}`);
+    const medsRes = await fetch(`${API_URL}/api/medicines/low-stock`);
+    if (!medsRes.ok) throw new Error(`HTTP ${medsRes.status}`);
     const medsData = await medsRes.json();
     const lowStockCount = medsData.low_stock_medicines ? medsData.low_stock_medicines.length : 0;
     document.querySelector('#low-stock-count').textContent = lowStockCount;
@@ -321,6 +350,7 @@ async function loadDashboard() {
     
   } catch (error) {
     console.error('Dashboard load error:', error);
+    console.error("API error:", error);
   }
 }
 
@@ -337,4 +367,3 @@ document.addEventListener('DOMContentLoaded', () => {
   if (medicinesTable) fetchMedicines(medicinesTable);
   if (document.getElementById('dashboard')) loadDashboard();
 });
-

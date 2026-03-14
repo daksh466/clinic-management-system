@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patients - Ayurvedic Clinic</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="index.html">🏠 Home</a>
+      <a href="dashboard.html">📊 Dashboard</a>
+      <a href="patients.html"><strong>👥 Patients</strong></a>
+      <a href="medicines.html">💊 Medicines</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <h1>👥 Patient Management</h1>
+      
+      <form id="patient-form">
+        <h3>Add New Patient</h3>
+        <input type="text" name="name" placeholder="Full Name *" required>
+        <input type="number" name="age" placeholder="Age" min="1" max="120">
+        <input type="tel" name="phone" placeholder="Phone Number">
+        <input type="text" name="disease" placeholder="Disease/Condition *" required>
+        <textarea name="medicines" placeholder="Medicines Prescribed"></textarea>
+        <textarea name="parhej" placeholder="Diet Restrictions (Parhej)"></textarea>
+        <textarea name="precautions" placeholder="Precautions/Instructions *" required></textarea>
+        <input type="number" name="course_duration_days" placeholder="Course Duration (days) *" required min="1">
+        <input type="date" name="start_date" required>
+        <button type="submit" class="btn btn-primary">Add Patient</button>
+      </form>
+
+      <div class="card">
+        <h3>Patients List</h3>
+        <table id="patients-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Age</th>
+              <th>Phone</th>
+              <th>Disease</th>
+              <th>Medicines</th>
+              <th>Parhej</th>
+              <th>Precautions</th>
+              <th>Duration</th>
+              <th>Start</th>
+              <th>End</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medicines - Ayurvedic Clinic</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="index.html">🏠 Home</a>
+      <a href="dashboard.html">📊 Dashboard</a>
+      <a href="patients.html">👥 Patients</a>
+      <a href="medicines.html"><strong>💊 Medicines</strong></a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <h1>💊 Medicine Inventory</h1>
+      
+      <form id="medicine-form">
+        <h3>Add New Medicine</h3>
+        <input type="text" name="medicine_name" placeholder="Medicine Name *" required>
+        <input type="number" name="quantity" placeholder="Quantity *" required min="1">
+        <input type="date" name="expiry_date" required>
+        <button type="submit" class="btn btn-primary">Add Medicine</button>
+      </form>
+
+      <div class="card">
+        <h3>Inventory <a href="#" onclick="fetchMedicines(document.querySelector('#medicines-table tbody'))" class="btn btn-primary" style="float: right; padding: 8px 16px;">🔄 Refresh</a></h3>
+        <table id="medicines-table">
+          <thead>
+            <tr>
+              <th>Medicine Name</th>
+              <th>Quantity</th>
+              <th>Expiry Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

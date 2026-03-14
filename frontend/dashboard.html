@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Ayurvedic Clinic</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="index.html">🏠 Home</a>
+      <a href="dashboard.html"><strong>📊 Dashboard</strong></a>
+      <a href="patients.html">👥 Patients</a>
+      <a href="medicines.html">💊 Medicines</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <h1>📊 Clinic Dashboard</h1>
+      <p>Quick overview of your clinic status. Backend: <code>http://localhost:3000</code></p>
+      
+      <div class="dashboard-grid">
+        <div class="stat-card">
+          <div class="stat-number" id="total-patients">0</div>
+          <div>Total Patients</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-number" id="low-stock-count">0</div>
+          <div>Low Stock Medicines</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-number" id="today-reminders">0</div>
+          <div>Today's Reminders</div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+        <div id="reminders-container" class="card">
+          <h3>📅 Today's Treatment Reminders</h3>
+        </div>
+        
+        <div id="low-stock-container" class="card">
+          <h3>⚠️ Low Stock Medicines</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      loadDashboard();
+    });
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayurvedic Clinic Management</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="intro-modal" class="intro-modal">
+    <div class="intro-modal-content">
+      <h2>Vaidya</h2>
+      <h1>Dr. Rajkumar Rao</h1>
+      <p>Welcome to the Ayurvedic Clinic Management System</p>
+    </div>
+  </div>
+
+  <header>
+    <nav>
+      <a href="index.html"><strong>🏠 Home</strong></a>
+      <a href="dashboard.html">📊 Dashboard</a>
+      <a href="patients.html">👥 Patients</a>
+      <a href="medicines.html">💊 Medicines</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <h1>🌿 Ayurvedic Clinic Management System</h1>
+      <p>Welcome to your clinic dashboard. Backend API running at <code>http://localhost:3000</code></p>
+      <div style="margin-top: 2rem;">
+        <h3>Quick Actions</h3>
+        <a href="dashboard.html" class="btn btn-primary" style="margin-right: 1rem;">View Dashboard</a>
+        <a href="patients.html" class="btn btn-primary" style="margin-right: 1rem;">Manage Patients</a>
+        <a href="medicines.html" class="btn btn-primary">Manage Medicines</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Intro animation modal shown before home screen
+    document.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById('intro-modal');
+      if (!modal) return;
+
+      // Prevent scrolling while modal is open
+      document.body.classList.add('intro-open');
+
+      requestAnimationFrame(() => {
+        modal.classList.add('intro-visible');
+
+        setTimeout(() => {
+          modal.classList.add('intro-hide');
+          modal.addEventListener('animationend', () => {
+            modal.remove();
+            document.body.classList.remove('intro-open');
+          }, { once: true });
+        }, 2000);
+      });
+    });
+  </script>
+</body>
+</html>
+

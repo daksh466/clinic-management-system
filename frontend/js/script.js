@@ -1,4 +1,4 @@
-const API_URL = "https://YOUR_BACKEND_URL/api";
+const API_URL = "https://clinic-management-system-1dy2.onrender.com";
 
 // Show loading
 function showLoading(element) {
@@ -42,10 +42,7 @@ async function fetchPatients(tableBody) {
   }
   try {
     showLoading(tableBody);
-    const response = await fetch(`${API_URL}/patients`);
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
+    const response = await fetch(`${API_URL}/api/patients`);\n    if (!response.ok) {\n      throw new Error(`HTTP ${response.status}: ${response.statusText}`);\n    }
     const data = await response.json();
     renderPatientsTable(tableBody, data.patients || []);
   } catch (error) {
@@ -97,11 +94,7 @@ async function addPatient(form) {
   patientData.course_duration_days = parseNumber(patientData.course_duration_days);
 
   try {
-    const response = await fetch(`${API_URL}/patients`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(patientData)
-    });
+    const response = await fetch(`${API_URL}/api/patients`, {\n      method: 'POST',\n      headers: { 'Content-Type': 'application/json' },\n      body: JSON.stringify(patientData)\n    });
     
     if (response.ok) {
       showSuccess(form.parentElement, 'Patient added successfully!');
@@ -137,7 +130,7 @@ async function deletePatient(id) {
   if (!confirm('Delete this patient?')) return;
   
   try {
-    const response = await fetch(`${API_URL}/patients/${id}`, { method: 'DELETE' });
+    const response = await fetch(`${API_URL}/api/patients/${id}`, { method: 'DELETE' });
     if (response.ok) {
       showSuccess(document.body, 'Patient deleted!');
       const tableBody = document.querySelector('#patients-table tbody');
@@ -157,8 +150,7 @@ function editPatient(id) {
 async function fetchMedicines(tableBody) {
   try {
     showLoading(tableBody);
-    const response = await fetch(`${API_URL}/medicines`);
-    if (!response.ok) {
+    const response = await fetch(`${API_URL}/api/medicines`);\n    if (!response.ok) {
       const error = await response.json().catch(() => ({}));
       throw new Error(error.error || `HTTP ${response.status}`);
     }
@@ -194,11 +186,7 @@ async function addMedicine(form) {
   medicineData.quantity = parseNumber(medicineData.quantity);
 
   try {
-    const response = await fetch(`${API_URL}/medicines`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(medicineData)
-    });
+    const response = await fetch(`${API_URL}/api/medicines`, {\n      method: 'POST',\n      headers: { 'Content-Type': 'application/json' },\n      body: JSON.stringify(medicineData)\n    });
     
     if (response.ok) {
       showSuccess(form.parentElement, 'Medicine added successfully!');
@@ -224,10 +212,7 @@ async function addMedicine(form) {
 async function fetchReminders(container) {
   try {
     showLoading(container);
-    const response = await fetch(`${API_URL}/reminders`);
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      throw new Error(error.error || `HTTP ${response.status}`);
+    const response = await fetch(`${API_URL}/api/reminders`);\n    if (!response.ok) {\n      const error = await response.json().catch(() => ({}));\n      throw new Error(error.error || `HTTP ${response.status}`);
     }
     const data = await response.json();
     
@@ -264,8 +249,7 @@ async function searchPatients() {
   
   try {
     showLoading(tableBody);
-    const response = await fetch(`${API_URL}/patients/search?type=${type}&q=${encodeURIComponent(query)}`);
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const response = await fetch(`${API_URL}/api/patients/search?type=${type}&q=${encodeURIComponent(query)}`);\n    if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
     renderPatientsTable(tableBody, data.patients || []);
     infoDiv.textContent = `Found ${data.patients?.length || 0} results for "${query}" (${type})`;
@@ -285,8 +269,7 @@ async function loadMonthlyPatients() {
   
   try {
     showLoading(tableBody);
-    const response = await fetch(`${API_URL}/patients/reports/monthly?year=${year}&month=${month}`);
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const response = await fetch(`${API_URL}/api/patients/reports/monthly?year=${year}&month=${month}`);\n    if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
     renderPatientsTable(tableBody, data.patients || []);
     document.getElementById('search-results-info').textContent = `Monthly report: ${data.period} (${data.patients?.length || 0} patients)`;
@@ -301,8 +284,7 @@ async function loadInsights() {
   const medicinesList = document.getElementById('common-medicines');
   
   try {
-    const response = await fetch(`${API_URL}/patients/reports/insights`);
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const response = await fetch(`${API_URL}/api/patients/reports/insights`);\n    if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
     const insights = data.insights;
     
@@ -321,9 +303,7 @@ async function loadDashboard() {
   const lowStockContainer = document.querySelector('#low-stock-container');
   
   try {
-    // Total patients
-    const patientsRes = await fetch(`${API_BASE}/patients`);
-    if (!patientsRes.ok) throw new Error(`HTTP ${patientsRes.status}`);
+    // Total patients\n    const patientsRes = await fetch(`${API_URL}/patients`);\n    if (!patientsRes.ok) throw new Error(`HTTP ${patientsRes.status}`);
     const patientsData = await patientsRes.json();
     totalPatientsContainer.textContent = patientsData.patients ? patientsData.patients.length : 0;
     
@@ -331,8 +311,7 @@ async function loadDashboard() {
     fetchReminders(remindersContainer);
     
     // Low stock (fetch medicines)
-    const medsRes = await fetch(`${API_URL}/medicines/low-stock`);
-    if (!medsRes.ok) throw new Error(`HTTP ${medsRes.status}`);
+    const medsRes = await fetch(`${API_URL}/api/medicines/low-stock`);\n    if (!medsRes.ok) throw new Error(`HTTP ${medsRes.status}`);
     const medsData = await medsRes.json();
     const lowStockCount = medsData.low_stock_medicines ? medsData.low_stock_medicines.length : 0;
     document.querySelector('#low-stock-count').textContent = lowStockCount;

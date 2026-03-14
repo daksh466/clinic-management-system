@@ -1,26 +1,38 @@
-# Clinic Management System Deployment Preparation - TODO
+# Clinic Management System - Deployment TODO
 
-## Plan Breakdown (Approved)
+## ✅ Backend (Render)
+- [x] CORS configured for Netlify
+- [ ] Deploy to Render: https://clinic-management-system-1dy2.onrender.com
+- [ ] Test endpoints: /health, /api/patients, /api/medicines/low-stock
 
-**Step 1: Update frontend/js/script.js** ☑️
-- Replace `API_BASE = window.BACKEND_URL || 'http://localhost:5000/api'` with `const API_URL = "https://YOUR_BACKEND_URL/api";`
-- Rename all `API_BASE` to `API_URL` in fetches (patients, medicines, reminders, reports)
+## ✅ Frontend (Netlify) 
+- [x] API paths fixed (/api prefix)
+- [x] Production API_URL set
+- [ ] Netlify Settings:
+  | Setting | Value |
+  |---------|-------|
+  | Base directory | `/` |
+  | Build command | `(empty)` |
+  | Publish directory | `frontend` |
+- [ ] Deploy & test connection
 
-**Step 2: Update DEPLOYMENT.md** ☑️
-- Create comprehensive deployment instructions for Render + Netlify
-- Include backend deploy steps, URL replacement, Netlify drag-drop with dashboard.html as index
+## 🔄 Testing
+1. Visit Netlify URL → Check dashboard loads data
+2. Console → No CORS/fetch errors
+3. Add patient/medicine → Backend updates
+4. Backend logs → Requests from Netlify origin
 
-**Step 3: Update README.md** ☑️
-- Add deployment quick-start section with links to instructions
+## 📋 Commands
+```bash
+# Backend local test
+cd clinic-management-system/backend
+npm install
+npm start
+# Test: curl http://localhost:5000/health
 
-**Step 4: Verify backend** ☑️ (No changes needed - searches confirmed PORT/CORS/scripts/routes/DB)
+# Frontend serve (local)
+npx serve clinic-management-system/frontend
+```
 
-**Step 5: Test locally** (Post-edits)
-- Backend: `cd backend && npm start`
-- Frontend: Update placeholder, open dashboard.html, verify fetches
-
-**Step 6: Complete** ⏳
-- attempt_completion with deploy commands/demo
-
-**Progress:** Backend verified. Proceeding with frontend/docs updates.
+**Status: Ready for deployment!**
 

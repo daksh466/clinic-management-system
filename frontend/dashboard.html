@@ -75,23 +75,21 @@
     async function loadDashboardStats() {
       try {
         // Total patients
-        const patientsRes = await fetch(`${API_BASE}/patients`);
+        const patientsRes = await fetch(`${API_URL}/api/patients`);
         const patientsData = await patientsRes.json();
         document.getElementById('total-patients').textContent = patientsData.patients?.length || 0;
 
         // Low stock
-        const medsRes = await fetch(`${API_BASE}/medicines/low-stock`);
+        const medsRes = await fetch(`${API_URL}/api/medicines/low-stock`);
         const medsData = await medsRes.json();
         document.getElementById('low-stock-count').textContent = medsData.low_stock_medicines?.length || 0;
 
         // Today's reminders
-        const remindersRes = await fetch(`${API_BASE}/reminders`);
-        const remindersData = await remindersRes.json();
-        document.getElementById('today-reminders').textContent = remindersData.summary?.today || 0;
+        const remindersRes = await fetch(`${API_URL}/api/reminders`);\n        const remindersData = await remindersRes.json();\n        document.getElementById('today-reminders').textContent = remindersData.summary?.today || 0;
 
         // Active treatments (count treatments where end_date > today)
         const today = new Date().toISOString().split('T')[0];
-        const treatmentsRes = await fetch(`${API_BASE}/treatments?end_after=${today}`);
+        // Note: treatments endpoint not implemented in backend\n        document.getElementById('active-treatments').textContent = 'N/A';
         const treatmentsData = await treatmentsRes.json();
         document.getElementById('active-treatments').textContent = treatmentsData.treatments?.length || 0;
 

@@ -16,7 +16,11 @@ app.use((req, res, next) => {
 });
 
 // Middleware
-app.use(cors({ origin: process.env.FRONTEND_URL || true }));
+app.use(cors({ 
+  origin: process.env.FRONTEND_URL || "https://thriving-hamster-0f2940.netlify.app",
+  methods: ["GET","POST","PUT","DELETE"],
+  credentials: true 
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

@@ -74,13 +74,67 @@ class Patient {
     });
   }
 
-  static delete(id, callback) {
+static delete(id, callback) {
     db.run('DELETE FROM patients WHERE id = ?', [id], function(err) {
       if (err) {
         callback(err, null);
       } else {
         callback(null, { changes: this.changes });
       }
+    });
+  }
+
+  // NEW: Search patients by name, phone, or disease (case-insensitive)
+  static search(type, query, callback) {
+    if (!['name', 'phone', 'disease'].includes(type)) {
+      return callback(new Error('Invalid search type'), []);
+    }
+    const sql = `SELECT * FROM patients WHERE LOWER(${type}) LIKE LOWER(?) ORDER BY created_at DESC`;
+    db.all(sql, [`%${query}%`], callback);
+  }
+
+  // NEW: Get patients for specific month/year
+  static monthly(year, month, callback) {
+    const startDate = `${year}-${month.toString().padStart(2, '0')}-01`;
+    const nextMonth = new Date(year, month, 0);
+    const endDate = `${year}-${month.toString().padStart(2, '0')}-${nextMonth.getDate()}`;
+    const sql = `SELECT * FROM patients WHERE created_at >= ? AND created_at < ? ORDER BY created_at DESC`;
+    db.all(sql, [startDate, `${endDate} 23:59:59`], callback);
+  }
+
+  // NEW: Get insights - common diseases and medicines
+  static getInsights(callback) {
+    // Common diseases
+    const diseaseSql = `
+      SELECT disease, COUNT(*) as count 
+      FROM patients 
+      WHERE disease IS NOT NULL AND TRIM(disease) != '' 
+      GROUP BY LOWER(TRIM(disease)) 
+      ORDER BY count DESC 
+      LIMIT 10
+    `;
+    
+    // Common medicines (parse comma-separated text field)
+    const medicineSql = `
+      SELECT TRIM(m.value) as medicine, COUNT(*) as count
+      FROM patients, json_each('["' || replace(medicines, ',', '","') || '"]') as m
+      WHERE medicines IS NOT NULL AND TRIM(medicines) != '' AND TRIM(m.value) != ''
+      GROUP BY LOWER(TRIM(m.value))
+      ORDER BY count DESC
+      LIMIT 10
+    `;
+
+    db.all(diseaseSql, [], (err, diseases) => {
+      if (err) return callback(err, null);
+      
+      db.all(medicineSql, [], (err2, medicines) => {
+        if (err2) return callback(err2, null);
+        callback(null, {
+          commonDiseases: diseases,
+          commonMedicines: medicines,
+          totalPatients: diseases.reduce((sum, d) => sum + d.count, 0) // approx
+        });
+      });
     });
   }
 }

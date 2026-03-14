@@ -90,6 +90,24 @@ function initializeDatabase() {
       else console.log('Index on medicines.expiry_date created');
     });
 
+    // Create treatments table
+    db.run(`CREATE TABLE IF NOT EXISTS treatments (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      patient_id INTEGER,
+      medicine TEXT,
+      notes TEXT,
+      start_date DATE,
+      end_date DATE,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (patient_id) REFERENCES patients (id)
+    )`, (err) => {
+      if (err) {
+        console.error('Error creating treatments table:', err.message);
+      } else {
+        console.log('Treatments table created or already exists.');
+      }
+    });
+
     // Create appointments table
     db.run(`CREATE TABLE IF NOT EXISTS appointments (
       id INTEGER PRIMARY KEY AUTOINCREMENT,

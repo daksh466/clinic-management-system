@@ -3,7 +3,7 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 // Basic request logging (lightweight alternative to morgan)
 app.use((req, res, next) => {
@@ -16,7 +16,7 @@ app.use((req, res, next) => {
 });
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: process.env.FRONTEND_URL || true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -67,8 +67,8 @@ app.use((err, req, res, next) => {
 });
 
 const server = app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  console.log(`Patients API: http://localhost:${PORT}/api/patients`);
+console.log(`Server running on port ${PORT}`);
+console.log(`Patients API: /api/patients`);
 });
 
 // Graceful shutdown

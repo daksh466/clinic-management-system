@@ -17,45 +17,104 @@
   </header>
 
   <div class="container">
-    <div class="card">
+    <div class="dashboard-hero">
       <h1>📊 Clinic Dashboard</h1>
-      <p>Quick overview of your clinic status. Backend: <code>http://localhost:3000</code></p>
-      
-      <div class="dashboard-grid">
-        <div class="stat-card">
-          <div class="stat-number" id="total-patients">0</div>
-          <div>Total Patients</div>
-        </div>
-        
-        <div class="stat-card">
-          <div class="stat-number" id="low-stock-count">0</div>
-          <div>Low Stock Medicines</div>
-        </div>
-        
-        <div class="stat-card">
-          <div class="stat-number" id="today-reminders">0</div>
-          <div>Today's Reminders</div>
-        </div>
-      </div>
+      <p>Quick overview & quick actions</p>
+    </div>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-        <div id="reminders-container" class="card">
-          <h3>📅 Today's Treatment Reminders</h3>
-        </div>
-        
-        <div id="low-stock-container" class="card">
-          <h3>⚠️ Low Stock Medicines</h3>
-        </div>
+    <!-- Top Stat Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-number" id="total-patients">0</div>
+        <div>Total Patients</div>
       </div>
+      <div class="stat-card">
+        <div class="stat-icon">💊</div>
+        <div class="stat-number" id="active-treatments">0</div>
+        <div>Active Treatments</div>
+      </div>
+      <div class="stat-card warning">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-number" id="low-stock-count">0</div>
+        <div>Low Stock</div>
+      </div>
+      <div class="stat-card alert">
+        <div class="stat-icon">📅</div>
+        <div class="stat-number" id="today-reminders">0</div>
+        <div>Today's Reminders</div>
+      </div>
+    </div>
+
+    <!-- Reminders List -->
+    <div class="card">
+      <h2>📅 Today's Reminders</h2>
+      <div id="reminders-list"></div>
+    </div>
+
+    <!-- Quick Action Buttons -->
+    <div class="action-buttons">
+      <a href="patients.html" class="action-btn primary">
+        ➕ Add Patient
+      </a>
+      <a href="patients.html" class="action-btn primary">
+        👥 View Patients
+      </a>
+      <a href="medicines.html" class="action-btn primary">
+        💊 Medicine Inventory
+      </a>
+      <a href="dashboard.html#reminders" class="action-btn secondary">
+        🔔 Full Reminders
+      </a>
     </div>
   </div>
 
   <script src="js/script.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      loadDashboard();
-    });
+    // Enhanced loadDashboard for new layout
+    async function loadDashboardStats() {
+      try {
+        // Total patients
+        const patientsRes = await fetch(`${API_BASE}/patients`);
+        const patientsData = await patientsRes.json();
+        document.getElementById('total-patients').textContent = patientsData.patients?.length || 0;
+
+        // Low stock
+        const medsRes = await fetch(`${API_BASE}/medicines/low-stock`);
+        const medsData = await medsRes.json();
+        document.getElementById('low-stock-count').textContent = medsData.low_stock_medicines?.length || 0;
+
+        // Today's reminders
+        const remindersRes = await fetch(`${API_BASE}/reminders`);
+        const remindersData = await remindersRes.json();
+        document.getElementById('today-reminders').textContent = remindersData.summary?.today || 0;
+
+        // Active treatments (count treatments where end_date > today)
+        const today = new Date().toISOString().split('T')[0];
+        const treatmentsRes = await fetch(`${API_BASE}/treatments?end_after=${today}`);
+        const treatmentsData = await treatmentsRes.json();
+        document.getElementById('active-treatments').textContent = treatmentsData.treatments?.length || 0;
+
+        // Load reminders list
+        const todayReminders = remindersData.reminders?.filter(r => r.reminder_type === 'today') || [];
+        const remindersList = document.getElementById('reminders-list');
+        if (todayReminders.length) {
+          remindersList.innerHTML = todayReminders.map(r => `
+            <div class="reminder-item">
+              <strong>${r.name}</strong> (${r.disease})
+              <br>📞 ${r.phone} • Ends ${r.end_date}
+            </div>
+          `).join('');
+        } else {
+          remindersList.innerHTML = '<div class="no-data">No reminders today 🎉</div>';
+        }
+      } catch (error) {
+        console.error('Dashboard error:', error);
+        document.querySelectorAll('.stat-number').forEach(el => el.textContent = '—');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadDashboardStats);
   </script>
 </body>
 </html>
-

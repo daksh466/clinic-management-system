@@ -1,5 +1,4 @@
-// API Base URL (update if backend port changes)
-const API_BASE = 'http://localhost:3000/api';
+const API_URL = "https://YOUR_BACKEND_URL/api";
 
 // Show loading
 function showLoading(element) {
@@ -43,7 +42,7 @@ async function fetchPatients(tableBody) {
   }
   try {
     showLoading(tableBody);
-    const response = await fetch(`${API_BASE}/patients`);
+    const response = await fetch(`${API_URL}/patients`);
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
@@ -52,7 +51,7 @@ async function fetchPatients(tableBody) {
   } catch (error) {
     let errorMsg = 'Failed to load patients';
     if (error.message.includes('Failed to fetch') || error.message.includes('ERR_CONNECTION_REFUSED')) {
-      errorMsg = 'Server not running. Start backend: cd ../backend && npm run dev';
+errorMsg = 'Backend server not available. Check if running and network/CORS settings.';
     } else {
       errorMsg += ': ' + error.message;
     }
@@ -98,7 +97,7 @@ async function addPatient(form) {
   patientData.course_duration_days = parseNumber(patientData.course_duration_days);
 
   try {
-    const response = await fetch(`${API_BASE}/patients`, {
+    const response = await fetch(`${API_URL}/patients`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(patientData)
@@ -125,7 +124,7 @@ async function addPatient(form) {
   } catch (error) {
     let errorMsg = 'Network error';
     if (error.message.includes('Failed to fetch') || error.message.includes('ERR_CONNECTION_REFUSED')) {
-      errorMsg = 'Server not running. Start backend first.';
+'Backend server not available. Check network/CORS.';
     } else {
       errorMsg += ': ' + error.message;
     }
@@ -138,7 +137,7 @@ async function deletePatient(id) {
   if (!confirm('Delete this patient?')) return;
   
   try {
-    const response = await fetch(`${API_BASE}/patients/${id}`, { method: 'DELETE' });
+    const response = await fetch(`${API_URL}/patients/${id}`, { method: 'DELETE' });
     if (response.ok) {
       showSuccess(document.body, 'Patient deleted!');
       const tableBody = document.querySelector('#patients-table tbody');
@@ -158,7 +157,7 @@ function editPatient(id) {
 async function fetchMedicines(tableBody) {
   try {
     showLoading(tableBody);
-    const response = await fetch(`${API_BASE}/medicines`);
+    const response = await fetch(`${API_URL}/medicines`);
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
       throw new Error(error.error || `HTTP ${response.status}`);
@@ -195,7 +194,7 @@ async function addMedicine(form) {
   medicineData.quantity = parseNumber(medicineData.quantity);
 
   try {
-    const response = await fetch(`${API_BASE}/medicines`, {
+    const response = await fetch(`${API_URL}/medicines`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(medicineData)
@@ -225,7 +224,7 @@ async function addMedicine(form) {
 async function fetchReminders(container) {
   try {
     showLoading(container);
-    const response = await fetch(`${API_BASE}/reminders`);
+    const response = await fetch(`${API_URL}/reminders`);
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
       throw new Error(error.error || `HTTP ${response.status}`);
@@ -251,7 +250,71 @@ async function fetchReminders(container) {
   }
 }
 
-// Fetch dashboard stats
+// NEW: Search patients
+async function searchPatients() {
+  const type = document.getElementById('search-type').value;
+  const query = document.getElementById('search-query').value.trim();
+  const tableBody = document.querySelector('#patients-table tbody');
+  const infoDiv = document.getElementById('search-results-info');
+  
+  if (!query) {
+    infoDiv.textContent = 'Enter a search term';
+    return;
+  }
+  
+  try {
+    showLoading(tableBody);
+    const response = await fetch(`${API_URL}/patients/search?type=${type}&q=${encodeURIComponent(query)}`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    renderPatientsTable(tableBody, data.patients || []);
+    infoDiv.textContent = `Found ${data.patients?.length || 0} results for "${query}" (${type})`;
+  } catch (error) {
+    showError(tableBody, 'Search failed: ' + error.message);
+    infoDiv.textContent = '';
+  }
+}
+
+// NEW: Load monthly patients
+async function loadMonthlyPatients() {
+  const year = document.getElementById('report-year').value;
+  const month = document.getElementById('report-month').value;
+  const tableBody = document.querySelector('#patients-table tbody');
+  
+  if (!year || !month) return;
+  
+  try {
+    showLoading(tableBody);
+    const response = await fetch(`${API_URL}/patients/reports/monthly?year=${year}&month=${month}`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    renderPatientsTable(tableBody, data.patients || []);
+    document.getElementById('search-results-info').textContent = `Monthly report: ${data.period} (${data.patients?.length || 0} patients)`;
+  } catch (error) {
+    showError(tableBody, 'Report failed: ' + error.message);
+  }
+}
+
+// NEW: Load insights for dashboard
+async function loadInsights() {
+  const diseasesList = document.getElementById('common-diseases');
+  const medicinesList = document.getElementById('common-medicines');
+  
+  try {
+    const response = await fetch(`${API_URL}/patients/reports/insights`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    const insights = data.insights;
+    
+    diseasesList.innerHTML = insights.commonDiseases?.slice(0,5).map(d => `<li>${d.disease} (${d.count})</li>`).join('') || '<li>No data</li>';
+    medicinesList.innerHTML = insights.commonMedicines?.slice(0,5).map(m => `<li>${m.medicine} (${m.count})</li>`).join('') || '<li>No data</li>';
+  } catch (error) {
+    diseasesList.innerHTML = '<li>Error loading insights</li>';
+    medicinesList.innerHTML = '<li>Error loading insights</li>';
+  }
+}
+
+// Fetch dashboard stats (updated to include insights)
 async function loadDashboard() {
   const totalPatientsContainer = document.querySelector('#total-patients');
   const remindersContainer = document.querySelector('#reminders-container');
@@ -268,11 +331,14 @@ async function loadDashboard() {
     fetchReminders(remindersContainer);
     
     // Low stock (fetch medicines)
-    const medsRes = await fetch(`${API_BASE}/medicines/low-stock`);
+    const medsRes = await fetch(`${API_URL}/medicines/low-stock`);
     if (!medsRes.ok) throw new Error(`HTTP ${medsRes.status}`);
     const medsData = await medsRes.json();
     const lowStockCount = medsData.low_stock_medicines ? medsData.low_stock_medicines.length : 0;
     document.querySelector('#low-stock-count').textContent = lowStockCount;
+    
+    // Insights
+    loadInsights();
     
   } catch (error) {
     console.error('Dashboard load error:', error);

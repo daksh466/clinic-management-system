@@ -18,3 +18,34 @@ Thumbs.db
 
 # Temporary
 *.tmp
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
+.env.*
+
+# Sensitive config
+config/
+config/secrets.json
+
+# Keys/Certs
+*.key
+*.pem
+*.crt
+*.cer
+
+# Builds/Dist
+dist/
+build/
+
+# Backend specific
+backend/node_modules/
+backend/package-lock.json
+
+# Enhanced databases (expanding *.db)
+**/*.db
+**/*.db-*
+**/*.sqlite
+**/*.sqlite3

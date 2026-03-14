@@ -1,12 +1,26 @@
-# Clinic Management System - Fix Errors & Optimize Storage
+# Clinic Management System Deployment Preparation - TODO
 
-## TODO Steps:
-- [x] 1. Fix frontend script.js: Add null checks, better error messages, server status check
-- [x] 2. Optimize SQLite DB: Add indexes in connection.js
-- [x] 3. Add backend health check endpoint
-- [ ] 4. Install backend deps & start server (cd backend && npm install && npm run dev)
-- [ ] 5. Test frontend with live-server (cd frontend && npx live-server)
-- [ ] 6. Verify full flow: Add patient → view list → data persists in clinic.db
-- [ ] 7. Complete!
+## Plan Breakdown (Approved)
 
-Progress updated. Backend ready - run step 4 next.
+**Step 1: Update frontend/js/script.js** ☑️
+- Replace `API_BASE = window.BACKEND_URL || 'http://localhost:5000/api'` with `const API_URL = "https://YOUR_BACKEND_URL/api";`
+- Rename all `API_BASE` to `API_URL` in fetches (patients, medicines, reminders, reports)
+
+**Step 2: Update DEPLOYMENT.md** ☑️
+- Create comprehensive deployment instructions for Render + Netlify
+- Include backend deploy steps, URL replacement, Netlify drag-drop with dashboard.html as index
+
+**Step 3: Update README.md** ☑️
+- Add deployment quick-start section with links to instructions
+
+**Step 4: Verify backend** ☑️ (No changes needed - searches confirmed PORT/CORS/scripts/routes/DB)
+
+**Step 5: Test locally** (Post-edits)
+- Backend: `cd backend && npm start`
+- Frontend: Update placeholder, open dashboard.html, verify fetches
+
+**Step 6: Complete** ⏳
+- attempt_completion with deploy commands/demo
+
+**Progress:** Backend verified. Proceeding with frontend/docs updates.
+

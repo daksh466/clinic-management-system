@@ -90,6 +90,48 @@ router.put('/:id', (req, res) => {
   });
 });
 
+// NEW: Search patients
+router.get('/search', (req, res) => {
+  const { type, q: query } = req.query;
+  if (!type || !query || typeof query !== 'string' || query.trim().length === 0) {
+    return res.status(400).json({ error: 'type (name|phone|disease) and q (query) required' });
+  }
+
+  Patient.search(type.trim(), query.trim(), (err, patients) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ patients, query: { type, q: query } });
+  });
+});
+
+// NEW: Monthly patients report
+router.get('/reports/monthly', (req, res) => {
+  const { year, month } = req.query;
+  const y = parseInt(year);
+  const m = parseInt(month);
+  if (isNaN(y) || isNaN(m) || y < 1900 || y > 2100 || m < 1 || m > 12) {
+    return res.status(400).json({ error: 'Valid year (YYYY) and month (1-12) required' });
+  }
+
+  Patient.monthly(y, m, (err, patients) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ patients, period: `${year}-${month}` });
+  });
+});
+
+// NEW: Insights report
+router.get('/reports/insights', (req, res) => {
+  Patient.getInsights((err, insights) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ insights });
+  });
+});
+
 // DELETE /patients/:id - Delete patient
 router.delete('/:id', (req, res) => {
   const id = parseId(req.params.id);

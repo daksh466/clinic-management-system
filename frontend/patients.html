@@ -34,6 +34,32 @@
         <button type="submit" class="btn btn-primary">Add Patient</button>
       </form>
 
+      <!-- Search Section -->
+      <div class="card" style="margin-bottom: 1rem;">
+        <h3>🔍 Search Patients</h3>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: end;">
+          <select id="search-type">
+            <option value="name">Name</option>
+            <option value="phone">Phone</option>
+            <option value="disease">Disease</option>
+          </select>
+          <input type="text" id="search-query" placeholder="Enter search term..." style="flex: 1; min-width: 200px;">
+          <button onclick="searchPatients()" class="btn btn-primary">Search</button>
+          <button onclick="fetchPatients(document.querySelector('#patients-table tbody'))" class="btn">Clear</button>
+        </div>
+        <div id="search-results-info" style="margin-top: 0.5rem; font-style: italic;"></div>
+      </div>
+
+      <!-- Reports Section -->
+      <div class="card" style="margin-bottom: 1rem;">
+        <h3>📂 Monthly Patients Report</h3>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: end;">
+          <input type="number" id="report-year" placeholder="Year (YYYY)" min="2000" max="2030" value="2024">
+          <input type="number" id="report-month" placeholder="Month (1-12)" min="1" max="12" value="10">
+          <button onclick="loadMonthlyPatients()" class="btn btn-primary">Load Monthly Report</button>
+        </div>
+      </div>
+
       <div class="card">
         <h3>Patients List</h3>
         <table id="patients-table">

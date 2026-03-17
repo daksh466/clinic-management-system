@@ -1,4 +1,5 @@
-const API_URL = "https://clinic-management-system-1dy2.onrender.com";
+const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+const API_URL = isLocal ? 'http://localhost:5000' : 'https://clinic-management-system-1dy2.onrender.com';
 
 // Show loading
 function showLoading(element) {
@@ -63,6 +64,23 @@ async function fetchPatients(tableBody) {
 // Render patients table
 function renderPatientsTable(tableBody, patients) {
   tableBody.innerHTML = '';
+  // Loading state handled by showLoading()
+  if (!patients) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="11" style="text-align:center;padding:20px;">Failed to load patients</td>
+      </tr>
+    `;
+    return;
+  }
+  if (Array.isArray(patients) && patients.length === 0) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="11" style="text-align:center;padding:20px;">No patients found</td>
+      </tr>
+    `;
+    return;
+  }
   patients.forEach(patient => {
     const row = tableBody.insertRow();
     row.innerHTML = `

@@ -1,4 +1,40 @@
 # Ayurvedic Clinic Management System 🏥
+# Production-Grade SaaS Clinic Management System
+
+## Architecture
+Backend: Node.js, Express, PostgreSQL, Sequelize ORM, JWT Auth, Winston Logging, Docker, CI/CD
+Frontend: Modular JS, Central API client, Responsive UI, Toasts, Loading indicators
+
+## Installation
+1. Clone repo
+2. Run `docker-compose up` for full stack (backend + PostgreSQL)
+3. Or run backend: `cd backend && npm install && npm start`
+4. Or run frontend: open `frontend/index.html` or deploy to Netlify
+
+## Development
+- Backend: `backend/server.js`, modular structure in `backend/src/`
+- Frontend: modular JS in `frontend/js/`
+- Environment: `.env` for secrets, DB config
+- Run tests: (add tests in backend/tests/)
+
+## Deployment
+- Backend: Dockerfile, Render, Railway, or any Docker host
+- Frontend: Netlify, Vercel, or static hosting
+- CI/CD: GitHub Actions workflow in `.github/workflows/ci.yml`
+
+## Features
+- Modular backend (controllers, services, routes, middleware)
+- Centralized error handling, request logging, validation
+- Health endpoint `/health` with uptime, memory, CPU
+- PostgreSQL with normalized tables: Clinics, Doctors, Patients, Medicines, Reminders, Visits, Users
+- JWT authentication, role-based access (admin, doctor, assistant)
+- Multi-clinic SaaS: clinic_id in all tables, data isolation
+- CORS, API caching, rate limiting, gzip compression
+- Winston logging, error logs in `backend/logs/error.log`
+- Monitoring: health, uptime, metrics
+- Frontend: modular JS, central API client, retry logic, smart API URL detection
+- Responsive UI, loading indicators, toast notifications
+
 
 ## 🌟 Features
 - **Patient Management**: Add, view, delete patients with treatment details, diet (parhej), precautions
@@ -61,19 +97,11 @@ GET /api/patients/reports/* # Monthly, insights
 ```
 
 ## 📊 Current Status
-✅ Backend Render-ready (PORT, CORS, SQLite auto-init)  
-✅ Frontend static (Netlify drag-drop, dashboard entry)  
-✅ API_URL placeholder in script.js (replace post-deploy)  
-✅ Detailed deployment instructions  
+✅ Production backend (PostgreSQL, Docker, CI/CD, modular)
+✅ Modular frontend (responsive, API client, UI utilities)
+✅ API_URL auto-detection, CORS, caching, rate limiting
+✅ Health endpoint, monitoring, error logging
+✅ Full deployment guide
 
-**Live Demo Ready!** Deploy and access from any device.
-
-## Next (Optional)
-- Postgres for persistent data
-- Patient edit forms
-- Authentication
-- CSV export
-- SMS reminders
-
-**Production Deployed & Accessible via Public URLs! 🎉**
+**Ready for commercial SaaS deployment!**
 

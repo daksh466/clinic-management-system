@@ -1,37 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const Patient = require('../models/Patient');
-
-function parseId(param) {
-  const id = Number(param);
-  return Number.isInteger(id) && id > 0 ? id : null;
-}
+const patientController = require('../controllers/patientController');
 
 // GET /patients - List all patients
-router.get('/', (req, res) => {
-  Patient.findAll((err, patients) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    res.json({ patients });
-  });
-});
+router.get('/', patientController.getAllPatients);
 
 // GET /patients/:id - Get single patient
-router.get('/:id', (req, res) => {
-  const id = parseId(req.params.id);
-  if (!id) return res.status(400).json({ error: 'Invalid patient id' });
-
-  Patient.findById(id, (err, patient) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    if (!patient) {
-      return res.status(404).json({ error: 'Patient not found' });
-    }
-    res.json({ patient });
-  });
-});
+router.get('/:id', patientController.getPatientById);
 
 // Basic request validation helpers
 function validatePatientPayload(payload) {

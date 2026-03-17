@@ -25,7 +25,7 @@
    - **Root Directory**: `backend`
    - **Build Command**: `npm install`
    - **Start Command**: `npm start`
-   - **Env Var**: `FRONTEND_URL=https://your-frontend.netlify.app` (add after frontend deploy)
+  - **Env Var**: `FRONTEND_URLS=https://your-frontend.netlify.app,https://your-other-frontend.com` (comma-separated, add after frontend deploy)
    - Deploy → Get **BACKEND_URL** e.g. `https://clinic-backend-xyz.onrender.com`
 
 4. **Test Backend**:
@@ -70,7 +70,7 @@ Fully Deployed Public Clinic System ✅
 - [ ] Backend Render URL working (`/health`)
 - [ ] Frontend loads dashboard (no CORS errors)
 - [ ] Add patient works end-to-end
-- [ ] Update Render `FRONTEND_URL`
+- [ ] Update Render `FRONTEND_URLS` (comma-separated origins)
 - [ ] Custom domain (optional)
 
 ## ⚠️ Limitations & Upgrades

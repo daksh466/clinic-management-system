@@ -95,8 +95,12 @@ function renderPatientsTable(tableBody, patients) {
       <td>${patient.start_date}</td>
       <td>${patient.end_date}</td>
       <td>
-        <button class="btn btn-edit" onclick="editPatient(${patient.id})">Edit</button>
+        <button class="btn btn-primary" onclick="toggleVisitHistory(${patient.id})">Visit History</button>
+        <button class="btn btn-secondary" onclick="toggleAddVisitForm(${patient.id})" style="margin-left: 0.5rem;">Add Visit</button>
+        <button class="btn btn-edit" onclick="editPatient(${patient.id})" style="margin-left: 0.5rem;">Edit</button>
         <button class="btn btn-danger" onclick="deletePatient(${patient.id})" style="margin-left: 0.5rem;">Delete</button>
+        <div id="visit-history-${patient.id}" style="display:none;"></div>
+        <div id="add-visit-form-${patient.id}" style="display:none;"></div>
       </td>
     `;
   });

@@ -21,7 +21,7 @@ export async function renderVisitHistory(container, patientId) {
   renderAddVisitForm(document.getElementById('add-visit-form'), patientId, () => renderVisitHistory(container, patientId));
 }
 
-function renderAddVisitForm(formContainer, patientId, onSuccess) {
+export function renderAddVisitForm(formContainer, patientId, onSuccess) {
   formContainer.innerHTML = `
     <h4>Add Visit</h4>
     <form id="visit-form">

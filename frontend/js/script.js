@@ -112,9 +112,10 @@ function renderPatientsTable(tableBody, patients) {
     if (!historyDiv) return;
     if (historyDiv.style.display === 'none') {
       historyDiv.style.display = 'block';
-      // TODO: Fetch and render visit history for patientId
-      historyDiv.innerHTML = '<div>Loading visit history...</div>';
-      // Example: fetchVisitHistory(patientId, historyDiv);
+      // Dynamically import and render visit history
+      import('../src/components/VisitHistory.js').then(mod => {
+        mod.renderVisitHistory(historyDiv, patientId);
+      });
     } else {
       historyDiv.style.display = 'none';
       historyDiv.innerHTML = '';
@@ -127,9 +128,16 @@ function renderPatientsTable(tableBody, patients) {
     if (!formDiv) return;
     if (formDiv.style.display === 'none') {
       formDiv.style.display = 'block';
-      // TODO: Render add visit form for patientId
-      formDiv.innerHTML = '<div>Add Visit form goes here</div>';
-      // Example: renderAddVisitForm(patientId, formDiv);
+      // Dynamically import and render add visit form only
+      import('../src/components/VisitHistory.js').then(mod => {
+        mod.renderAddVisitForm(formDiv, patientId, () => {
+          // Refresh visit history after adding
+          const historyDiv = document.getElementById(`visit-history-${patientId}`);
+          if (historyDiv && historyDiv.style.display === 'block') {
+            mod.renderVisitHistory(historyDiv, patientId);
+          }
+        });
+      });
     } else {
       formDiv.style.display = 'none';
       formDiv.innerHTML = '';

@@ -85,6 +85,7 @@ sequelize.sync({ alter: true })
 app.use('/api/patients', require('./routes/patients'));
 app.use('/api/medicines', require('./routes/medicines'));
 app.use('/api/reminders', require('./routes/reminders'));
+app.use('/api/visits', require('./src/routes/visits'));
 
 // Health check
 app.get('/health', (req, res) => {

@@ -25,6 +25,7 @@ export function renderAddVisitForm(formContainer, patientId, onSuccess) {
   formContainer.innerHTML = `
     <h4>Add Visit</h4>
     <form id="visit-form">
+      <input type="date" name="visit_date" required value="${new Date().toISOString().split('T')[0]}">
       <input type="text" name="diagnosis" placeholder="Diagnosis" required>
       <input type="text" name="medicines" placeholder="Medicines">
       <textarea name="notes" placeholder="Notes"></textarea>
@@ -36,6 +37,10 @@ export function renderAddVisitForm(formContainer, patientId, onSuccess) {
     e.preventDefault();
     const formData = Object.fromEntries(new FormData(form));
     formData.patient_id = patientId;
+    // Ensure visit_date is sent as ISO string
+    if (formData.visit_date) {
+      formData.visit_date = new Date(formData.visit_date).toISOString();
+    }
     const result = await addVisit(formData);
     if (result.error) {
       formContainer.innerHTML += `<div class="error">${result.error}</div>`;
